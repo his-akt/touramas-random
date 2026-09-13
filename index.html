@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ツアマス ランダム編成</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>
+            ツアマス<br>
+            ランダム編成
+        </h1>
+
+        <button id="randomButton">
+            🎲 ランダム編成
+        </button>
+
+        <div id="result">
+            <p>ボタンを押してください</p>
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+
+    <!-- Service Worker -->
+    <script>
+
+        if ("serviceWorker" in navigator) {
+
+            navigator.serviceWorker.register(
+                "./service-worker.js"
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>

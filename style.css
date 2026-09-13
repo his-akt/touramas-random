@@ -1,0 +1,45 @@
+/* 画面全体 */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* アプリ本体 */
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+/* タイトル */
+h1 {
+    margin-bottom: 30px;
+}
+
+/* ランダムボタン */
+#randomButton {
+    width: 100%;
+    padding: 18px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* 結果表示 */
+#result {
+    margin-top: 30px;
+}
+
+/* アイドル名 */
+.idol {
+    margin: 12px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
