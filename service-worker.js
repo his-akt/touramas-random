@@ -1,43 +1,5 @@
-const CACHE_NAME = "touramas-random-v1";
-
-const FILES_TO_CACHE = [
-    "./",
-    "./index.html",
-    "./style.css",
-    "./script.js",
-    "./manifest.json"
-];
-
-
-// インストール時にファイルを保存
-self.addEventListener("install", function(event) {
-
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(function(cache) {
-                return cache.addAll(FILES_TO_CACHE);
-            })
-    );
-
-});
-
-
-// 保存したファイルを優先して使用
-self.addEventListener("fetch", function(event) {
-
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response) {
-
-                // 保存済みならそれを使う
-                if (response) {
-                    return response;
-                }
-
-                // 保存されていなければ通常通り通信
-                return fetch(event.request);
-
-            })
-    );
-
-});
+const CACHE_NAME="touramas-random-v4";
+const APP_FILES=["./","./index.html","./style.css","./script.js","./manifest.json"];
+self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_FILES)));self.skipWaiting()});
+self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim()});
+self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{const x=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,x));return r}))));

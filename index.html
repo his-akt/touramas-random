@@ -1,59 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>ツアマス ランダム編成</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+<title>ツアマス ランダム編成</title>
 </head>
-
-
 <body>
-
-    <div class="container">
-
-        <h1>
-            ツアマス<br>
-            ランダム編成
-        </h1>
-
-        <button id="randomButton">
-            🎲 ランダム編成
-        </button>
-
-        <div id="result">
-            <p>ボタンを押してください</p>
-        </div>
-
-    </div>
-
-
-    <script src="script.js"></script>
-
-
-    <!-- Service Worker -->
-    <script>
-
-        if ("serviceWorker" in navigator) {
-
-            navigator.serviceWorker.register(
-                "./service-worker.js"
-            );
-
-        }
-
-    </script>
-
+<main class="app">
+<header><h1>ツアマス ランダム編成</h1></header>
+<section class="card filters">
+<div><h2>ジャンル</h2><div id="genreFilters" class="checks"></div></div>
+<div><h2>レア度</h2><div id="rarityFilters" class="checks"></div></div>
+</section>
+<button id="randomButton" class="random-button" type="button">ランダム編成</button>
+<section id="result" aria-live="polite"><div class="empty-message">「ランダム編成」を押してください</div></section>
+</main>
+<script src="script.js"></script>
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));}</script>
 </body>
-
 </html>
