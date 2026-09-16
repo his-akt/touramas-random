@@ -2193,12 +2193,18 @@ function renderIdolPicker(){
  document.querySelectorAll("[data-idol-name]").forEach(b=>b.onclick=()=>{const idol=IDOLS.find(x=>eq(x["アイドル名"],b.dataset.idolName));filterState.specificIdols[index]=idol||null;closeIdolPicker();renderFilterDetails()});
 }
 function setupFilterUI(){
- const songSeries=[...new Set(SONGS.map(x=>norm(x["シリーズ"])).filter(Boolean))];
- const idolSeries=[...new Set(IDOLS.map(x=>norm(x["シリーズ"])).filter(Boolean))];
  document.getElementById("songModeOptions").innerHTML=`${radio("song","none","指定なし",filterState.songMode)}${radio("song","series","シリーズ",filterState.songMode)}${radio("song","gender","性別",filterState.songMode)}`;
  document.getElementById("idolModeOptions").innerHTML=`${radio("idol","none","指定なし",filterState.idolMode)}${radio("idol","series","シリーズ",filterState.idolMode)}${radio("idol","gender","性別",filterState.idolMode)}${radio("idol","specific","特定アイドル",filterState.idolMode)}`;
  document.getElementById("costumeModeOptions").innerHTML=`${radio("costume","none","指定なし",filterState.costumeMode)}${radio("costume","exclusive","専用",filterState.costumeMode)}${radio("costume","common","共通",filterState.costumeMode)}`;
- document.querySelectorAll("input[data-mode]").forEach(el=>el.onchange=()=>{setMode(el.dataset.category,el.dataset.categoryMode)});
+ // ラジオボタンはクリック時に明示的に状態を更新する。
+ // モーダル内の再描画で onchange が外れても動作するよう、イベント委譲を使用する。
+ document.querySelectorAll("[data-mode]").forEach(el=>{
+   el.onclick=()=>{
+     const category=el.dataset.category;
+     const mode=el.dataset.categoryMode;
+     setMode(category,mode);
+   };
+ });
  renderFilterDetails();
 }
 function radio(category,mode,label,current){return `<label class="radio-row"><input type="radio" name="${category}Mode" data-mode="${category}:${mode}" data-category="${category}" data-category-mode="${mode}" ${current===mode?"checked":""}><span>${label}</span></label>`}
