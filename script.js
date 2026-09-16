@@ -2160,7 +2160,13 @@ function renderFilterDetails(){
  songDetail.innerHTML=filterState.songMode==="series"?`<label class="select-label">シリーズ<select id="songSeriesSelect">${seriesOptions(SONGS,filterState.songValue)}</select></label>`:filterState.songMode==="gender"?`<div class="select-label">性別<div class="segmented">${["女","男"].map(v=>`<button type="button" class="seg-btn ${filterState.songValue===v?"selected":""}" data-song-gender="${esc(v)}">${v}</button>`).join("")}</div></div>`:"";
  idolDetail.innerHTML=filterState.idolMode==="series"?`<label class="select-label">シリーズ<select id="idolSeriesSelect">${seriesOptions(IDOLS,filterState.idolValue)}</select></label>`:filterState.idolMode==="gender"?`<div class="select-label">性別<div class="segmented">${["女","男"].map(v=>`<button type="button" class="seg-btn ${filterState.idolValue===v?"selected":""}" data-idol-gender="${esc(v)}">${v}</button>`).join("")}</div></div>`:filterState.idolMode==="specific"?`<div class="position-selectors">${POSITIONS.map((p,i)=>`<div class="position-selector"><span>${p}</span><button type="button" class="choice-button" data-position-index="${i}">${filterState.specificIdols[i]?esc(filterState.specificIdols[i]["アイドル名"]):"アイドルを選択"}<span>›</span></button></div>`).join("")}</div>`:"";
  costumeDetail.innerHTML="";
- document.querySelectorAll("[data-mode]").forEach(el=>{el.checked=el.dataset.mode===`${el.dataset.category}:${el.dataset.categoryMode}`});
+ // ラジオはネイティブinputではなく、role=radioのボタンとして描画する。
+ // 再描画時にブラウザのネイティブradio状態が残る問題を避け、見た目と状態を常にfilterStateに同期する。
+ document.querySelectorAll("[data-mode]").forEach(el=>{
+   const selected=el.dataset.mode===`${el.dataset.category}:${el.dataset.categoryMode}`;
+   el.setAttribute("aria-checked",selected?"true":"false");
+   el.classList.toggle("selected",selected);
+ });
  const ss=document.getElementById("songSeriesSelect");if(ss)ss.onchange=()=>{filterState.songValue=ss.value};
  const is=document.getElementById("idolSeriesSelect");if(is)is.onchange=()=>{filterState.idolValue=is.value};
  document.querySelectorAll("[data-song-gender]").forEach(b=>b.onclick=()=>{filterState.songValue=b.dataset.songGender;renderFilterDetails()});
@@ -2190,24 +2196,17 @@ function renderIdolPicker(){
   const name=norm(idol["アイドル名"]),disabled=selectedElsewhere.has(name);
   return `<button type="button" class="idol-choice" ${disabled?"disabled":""} data-idol-name="${esc(name)}"><strong>${esc(name)}</strong><small>${esc(idol["シリーズ"])}・${esc(idol["性別"])}</small></button>`;
  }).join("")||`<div class="picker-empty">該当するアイドルがありません。</div>`;
- document.querySelectorAll("[data-idol-name]").forEach(b=>b.onclick=()=>{const idol=IDOLS.find(x=>eq(x["アイドル名"],b.dataset.idolName));filterState.specificIdols[index]=idol||null;closeIdolPicker();renderFilterDetails()});
 }
 function setupFilterUI(){
  document.getElementById("songModeOptions").innerHTML=`${radio("song","none","指定なし",filterState.songMode)}${radio("song","series","シリーズ",filterState.songMode)}${radio("song","gender","性別",filterState.songMode)}`;
  document.getElementById("idolModeOptions").innerHTML=`${radio("idol","none","指定なし",filterState.idolMode)}${radio("idol","series","シリーズ",filterState.idolMode)}${radio("idol","gender","性別",filterState.idolMode)}${radio("idol","specific","特定アイドル",filterState.idolMode)}`;
  document.getElementById("costumeModeOptions").innerHTML=`${radio("costume","none","指定なし",filterState.costumeMode)}${radio("costume","exclusive","専用",filterState.costumeMode)}${radio("costume","common","共通",filterState.costumeMode)}`;
- // ラジオボタンはクリック時に明示的に状態を更新する。
- // モーダル内の再描画で onchange が外れても動作するよう、イベント委譲を使用する。
- document.querySelectorAll("[data-mode]").forEach(el=>{
-   el.onclick=()=>{
-     const category=el.dataset.category;
-     const mode=el.dataset.categoryMode;
-     setMode(category,mode);
-   };
- });
  renderFilterDetails();
 }
-function radio(category,mode,label,current){return `<label class="radio-row"><input type="radio" name="${category}Mode" data-mode="${category}:${mode}" data-category="${category}" data-category-mode="${mode}" ${current===mode?"checked":""}><span>${label}</span></label>`}
+function radio(category,mode,label,current){
+ const selected=current===mode;
+ return `<button type="button" class="radio-row${selected?" selected":""}" role="radio" aria-checked="${selected?"true":"false"}" data-mode="${category}:${mode}" data-category="${category}" data-category-mode="${mode}"><span class="radio-dot" aria-hidden="true"></span><span>${label}</span></button>`;
+}
 function openFilters(){document.getElementById("filterModal").classList.add("open");document.getElementById("filterModal").setAttribute("aria-hidden","false");setupFilterUI()}
 function closeFilters(){document.getElementById("filterModal").classList.remove("open");document.getElementById("filterModal").setAttribute("aria-hidden","true")}
 function validateFilters(){
@@ -2225,8 +2224,26 @@ function setup(){
  document.getElementById("filterClose").onclick=closeFilters;
  document.getElementById("filterApply").onclick=()=>{const v=validateFilters();if(v){alert(v);return}closeFilters();runRandom()};
  document.getElementById("filterReset").onclick=()=>{filterState.songMode="none";filterState.songValue="";filterState.idolMode="none";filterState.idolValue="";filterState.specificIdols=[null,null,null];filterState.costumeMode="none";setupFilterUI()};
- document.getElementById("idolPickerClose").onclick=closeIdolPicker;
+ document.getElementById("idolPickerClose").onclick=(e)=>{e.preventDefault();e.stopPropagation();closeIdolPicker()};
  document.getElementById("idolSearch").oninput=renderIdolPicker;
- document.getElementById("idolPicker").addEventListener("click",e=>{if(e.target.id==="idolPicker")closeIdolPicker()});
+ document.getElementById("idolPickerList").addEventListener("click",e=>{
+   const b=e.target.closest("[data-idol-name]");
+   if(!b||b.disabled)return;
+   const modal=document.getElementById("idolPicker");
+   const index=Number(modal.dataset.positionIndex);
+   const idol=IDOLS.find(x=>eq(x["アイドル名"],b.dataset.idolName));
+   filterState.specificIdols[index]=idol||null;
+   closeIdolPicker();
+   renderFilterDetails();
+ });
+ document.getElementById("idolPicker").addEventListener("click",e=>{if(e.target===e.currentTarget)closeIdolPicker()});
+ document.addEventListener("click",e=>{
+   const el=e.target.closest("[data-mode]");
+   if(!el)return;
+   e.preventDefault();
+   e.stopPropagation();
+   setMode(el.dataset.category,el.dataset.categoryMode);
+ });
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeIdolPicker();closeFilters()}});
 }
 addEventListener("DOMContentLoaded",setup);
