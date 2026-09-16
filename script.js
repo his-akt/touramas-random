@@ -2163,7 +2163,10 @@ function renderFilterDetails(){
  // ラジオはネイティブinputではなく、role=radioのボタンとして描画する。
  // 再描画時にブラウザのネイティブradio状態が残る問題を避け、見た目と状態を常にfilterStateに同期する。
  document.querySelectorAll("[data-mode]").forEach(el=>{
-   const selected=el.dataset.mode===`${el.dataset.category}:${el.dataset.categoryMode}`;
+   const category=el.dataset.category;
+   const mode=el.dataset.categoryMode;
+   const current=category==="song"?filterState.songMode:category==="idol"?filterState.idolMode:filterState.costumeMode;
+   const selected=mode===current;
    el.setAttribute("aria-checked",selected?"true":"false");
    el.classList.toggle("selected",selected);
  });
@@ -2193,8 +2196,8 @@ function renderIdolPicker(){
  const selectedElsewhere=new Set(filterState.specificIdols.map((x,i)=>i===index?null:x?x["アイドル名"]:null).filter(Boolean));
  const list=IDOLS.filter(x=>!q||norm(x["アイドル名"]).toLowerCase().includes(q)||norm(x["シリーズ"]).toLowerCase().includes(q));
  document.getElementById("idolPickerList").innerHTML=list.map(idol=>{
-  const name=norm(idol["アイドル名"]),disabled=selectedElsewhere.has(name);
-  return `<button type="button" class="idol-choice" ${disabled?"disabled":""} data-idol-name="${esc(name)}"><strong>${esc(name)}</strong><small>${esc(idol["シリーズ"])}・${esc(idol["性別"])}</small></button>`;
+  const name=norm(idol["アイドル名"]),disabled=selectedElsewhere.has(name),selected=filterState.specificIdols[index]&&eq(filterState.specificIdols[index]["アイドル名"],name);
+  return `<button type="button" class="idol-choice${selected?" selected":""}" ${disabled?"disabled":""} data-idol-name="${esc(name)}"><span><strong>${esc(name)}</strong><small>${esc(idol["シリーズ"])}・${esc(idol["性別"])}</small></span><span class="idol-choice-mark">${selected?"✓":""}</span></button>`;
  }).join("")||`<div class="picker-empty">該当するアイドルがありません。</div>`;
 }
 function setupFilterUI(){
