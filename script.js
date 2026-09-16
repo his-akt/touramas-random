@@ -2140,11 +2140,11 @@ function activeFilterSummary(){
 function display(x){
  const stage=esc(field(x.stage,["ステージ名","名前"])),song=esc(field(x.song,["楽曲名","曲名","名前"]));
  const cards=x.members.map((m,i)=>{
-  const acc=ACCESSORY_SLOTS.map(s=>{const a=m.accessories[s.key],name=a?field(a,["アクセサリー名","アクセサリ名","アクセサリー","名前"]):"なし";return `<div class="detail-row"><span class="label">${s.key}</span><span>${esc(name||"なし")}</span></div>`}).join("");
+  const acc=ACCESSORY_SLOTS.map(s=>{const a=m.accessories[s.key],name=a?field(a,["アクセサリー名","アクセサリ名","アクセサリー","名前"]):"なし";return `<div class="detail-row"><span class="label">${esc(s.key)}</span><span>${esc(name||"なし")}</span></div>`}).join("");
   return `<article class="idol-card"><div class="position">${POSITIONS[i]}</div><div class="idol-name">${esc(m.idol["アイドル名"])}</div><div class="detail-list"><div class="detail-row"><span class="label">衣装</span><span>${esc(field(m.costume||{},["衣装名","名前"])||"なし")}</span></div>${acc}<div class="detail-row"><span class="label">SP</span><span>${esc(field(m.sp||{},["SPアピール名","スペシャルアピール名","名前"])||"なし")}</span></div></div></article>`;
  }).join("");
  const summary=activeFilterSummary();
- document.getElementById("result").innerHTML=`<section class="result-card result-header"><div><h2>基本編成</h2><div class="basic-result"><div class="basic-row"><span class="label">ステージ</span><span>${stage}</span></div><div class="basic-row"><span class="label">楽曲</span><span>${song}</span></div></div></div><button id="rerollButton" class="small-button" type="button">再抽選</button></section>${summary.length?`<div class="active-filters">${summary.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}<section class="result-card"><h2>アイドル</h2><div class="lineup">${cards}</div></section>`;
+ document.getElementById("result").innerHTML=`<section class="result-card result-header"><div class="result-title"><span class="result-title-mark">✦</span><div><h2>今回のライブ編成</h2><div class="basic-result"><div class="basic-row"><span class="label">ステージ</span><span>${stage}</span></div><div class="basic-row"><span class="label">楽曲</span><span>${song}</span></div></div></div></div><button id="rerollButton" class="small-button" type="button">↻ 再抽選</button></section>${summary.length?`<div class="active-filters">${summary.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}<section class="result-card lineup-section"><h2 class="section-title"><span>★</span> アイドル編成</h2><div class="lineup">${cards}</div></section>`;
  document.getElementById("rerollButton").onclick=()=>runRandom();
 }
 function setMode(name,value){
