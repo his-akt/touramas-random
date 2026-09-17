@@ -44,7 +44,7 @@ h2,h3{margin:0 0 8px}h2{font-size:1rem}h3{font-size:.98rem;color:var(--blue-deep
   box-shadow:0 8px 24px rgba(74,103,170,.13),inset 0 0 0 1px rgba(124,181,255,.08);
   backdrop-filter:blur(10px)
 }
-.filters{display:grid;gap:12px}.filters>div{padding:2px 2px}.checks{display:flex;flex-wrap:wrap;gap:8px 12px}.checks label{display:inline-flex;align-items:center;gap:4px;font-size:.92rem}.checks input{width:18px;height:18px;accent-color:var(--pink)}
+.filters{display:grid;gap:12px}.filters>div{padding:2px 2px}.filter-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.filter-heading h2{margin:0}.mini-reset{border:1px solid rgba(92,132,211,.24);background:rgba(255,255,255,.78);color:#5570a0;border-radius:999px;padding:5px 9px;font-size:.76rem;font-weight:800;white-space:nowrap}.mini-reset:active{transform:translateY(1px)}.checks{display:flex;flex-wrap:wrap;gap:8px 12px}.checks label{display:inline-flex;align-items:center;gap:4px;font-size:.92rem}.checks input{width:18px;height:18px;accent-color:var(--pink)}
 .random-button{
   width:100%;margin:13px 0;padding:16px;border:1px solid rgba(255,255,255,.7);border-radius:18px;
   background:linear-gradient(105deg,#ef58b7 0%,#c85ee7 50%,#5dbbe9 100%);color:#fff;
