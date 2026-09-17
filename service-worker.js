@@ -1,5 +1,82 @@
-const CACHE_NAME="touramas-random-v10-1";
-const APP_FILES=["./","./index.html","./style.css","./script.js","./data.js","./manifest.json","./icon-192.png","./icon-512.png"];
-self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_FILES)));self.skipWaiting()});
-self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim()});
-self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{const x=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,x));return r}))));
+const CACHE_NAME = "touramas-random-v10-2";
+
+const APP_FILES = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./data.js",
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png"
+];
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", event => {
+  const request = event.request;
+
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+
+  // data.jsはネットワーク優先。
+  // オンラインなら必ず最新版を取得してキャッシュを更新し、
+  // オフラインまたは取得失敗時は保存済みのdata.jsを使用する。
+  if (url.pathname.endsWith("/data.js")) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("data.js fetch failed");
+          }
+
+          const cloned = response.clone();
+
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, cloned);
+          });
+
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+
+    return;
+  }
+
+  // data.js以外はキャッシュ優先。
+  event.respondWith(
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+
+      return fetch(request).then(response => {
+        const cloned = response.clone();
+
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(request, cloned);
+        });
+
+        return response;
+      });
+    })
+  );
+});
