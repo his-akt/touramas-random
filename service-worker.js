@@ -1,4 +1,4 @@
-const CACHE_NAME = "touramas-random-v10-2";
+const CACHE_NAME = "touramas-random-v10-design1";
 
 const APP_FILES = [
   "./",
@@ -8,7 +8,15 @@ const APP_FILES = [
   "./data.js",
   "./manifest.json",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./design/app-background.png",
+  "./design/sparkle-texture.png",
+  "./design/icon-song.svg",
+  "./design/icon-idol.svg",
+  "./design/icon-costume.svg",
+  "./design/icon-star.svg",
+  "./design/icon-genre.svg",
+  "./design/icon-rarity.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -33,48 +41,33 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const request = event.request;
-
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
 
-  // data.jsはネットワーク優先。
-  // オンラインなら必ず最新版を取得してキャッシュを更新し、
-  // オフラインまたは取得失敗時は保存済みのdata.jsを使用する。
+  // data.js is network-first so Excel-driven updates arrive without changing app logic.
   if (url.pathname.endsWith("/data.js")) {
     event.respondWith(
       fetch(request, { cache: "no-store" })
         .then(response => {
-          if (!response.ok) {
-            throw new Error("data.js fetch failed");
-          }
-
+          if (!response.ok) throw new Error("data.js fetch failed");
           const cloned = response.clone();
-
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, cloned);
-          });
-
+          caches.open(CACHE_NAME).then(cache => cache.put(request, cloned));
           return response;
         })
         .catch(() => caches.match(request))
     );
-
     return;
   }
 
-  // data.js以外はキャッシュ優先。
+  // Other app assets stay cache-first for reliable offline execution.
   event.respondWith(
     caches.match(request).then(cached => {
       if (cached) return cached;
 
       return fetch(request).then(response => {
         const cloned = response.clone();
-
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(request, cloned);
-        });
-
+        caches.open(CACHE_NAME).then(cache => cache.put(request, cloned));
         return response;
       });
     })
