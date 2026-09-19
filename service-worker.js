@@ -1,4 +1,4 @@
-const CACHE_NAME = "touramas-random-v10-design1";
+const CACHE_NAME = "touramas-random-v10-topdesign3";
 
 const APP_FILES = [
   "./",
@@ -10,6 +10,7 @@ const APP_FILES = [
   "./icon-192.png",
   "./icon-512.png",
   "./design/app-background.png",
+  "./design/top-hero.png",
   "./design/sparkle-texture.png",
   "./design/icon-song.svg",
   "./design/icon-idol.svg",

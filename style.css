@@ -84,4 +84,67 @@ h2,h3{margin:0 0 8px}h2{font-size:1rem}h3{font-size:.98rem;color:var(--blue-deep
 .position-selectors{display:grid;gap:9px;margin-top:10px}.position-selector{display:grid;grid-template-columns:5rem 1fr;align-items:center;gap:8px}.position-selector>span{font-size:.86rem;font-weight:800;color:#57709d}.choice-button{display:flex;justify-content:space-between;align-items:center;text-align:left;width:100%;padding:11px;border:1px solid #cbdcf3;border-radius:11px;background:rgba(255,255,255,.84);color:#354a77;font:inherit;box-shadow:0 3px 10px rgba(70,100,160,.05)}.choice-button span{font-size:1.25rem;color:#6f8bb8}.modal-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(10px)}.modal-actions button{flex:1;padding:12px;border-radius:12px;font:inherit;font-weight:900}.secondary-button{border:1px solid #cbdcf3;background:rgba(255,255,255,.84);color:#4c6592}.primary-button{border:0;background:linear-gradient(100deg,#ef58b7,#a769e7);color:#fff;box-shadow:0 6px 15px rgba(201,79,181,.2)}
 .picker-panel{max-height:92vh}.picker-body{padding:12px 16px 20px;overflow:auto}.search-input{width:100%;padding:11px 12px;border:1px solid #cbdcf3;border-radius:11px;background:rgba(255,255,255,.9);font:inherit;margin-bottom:10px;box-shadow:0 3px 9px rgba(70,100,160,.05)}.idol-picker-list{display:grid;gap:6px}.idol-choice{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:11px 12px;border:1px solid #d8e4f4;border-radius:11px;background:rgba(255,255,255,.84);color:#344b79;box-shadow:0 2px 7px rgba(70,100,160,.04)}.idol-choice small{color:#7181a0}.idol-choice:disabled{opacity:.4}.idol-choice.selected{border-color:#ef6abc;background:linear-gradient(90deg,#fff3fb,#f1f8ff);box-shadow:0 4px 12px rgba(239,106,188,.12)}.idol-choice-mark{font-size:1.2rem;font-weight:900;min-width:1.2em;text-align:center;color:#ef63bb}.picker-empty{padding:20px;text-align:center;color:#68779a}
 @media(max-width:430px){.app{padding-left:10px;padding-right:10px}.app-header h1{text-align:left;font-size:1.18rem}.filter-button{font-size:.82rem}.result-header{padding:13px}.idol-card{padding-left:13px;padding-right:13px}.detail-row{grid-template-columns:3.9rem 1fr}}
+
+/* Top hero redesign: large concert artwork above a bottom control dock. */
+.top-hero{
+  position:relative;overflow:hidden;margin:4px 0 14px;padding:8px 10px 16px;border-radius:28px;
+  min-height:calc(100svh - 24px);
+  display:flex;flex-direction:column;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.90);
+  box-shadow:0 18px 44px rgba(58,92,163,.16),0 0 0 1px rgba(127,187,246,.10),inset 0 1px 0 rgba(255,255,255,.92);
+  isolation:isolate;
+}
+.top-hero:before{
+  content:"";position:absolute;inset:0;z-index:-2;
+  background:url('./design/top-hero.png') center 42%/cover no-repeat;
+  transform:scale(1.02);
+}
+.top-hero:after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(34,91,174,.16) 0%,rgba(88,171,238,.03) 44%,rgba(255,255,255,.12) 55%,rgba(255,255,255,.68) 73%,rgba(255,255,255,.96) 100%),
+    radial-gradient(circle at 50% 22%,rgba(255,255,255,.36),transparent 34%);
+}
+.top-hero .app-header{margin:0;padding:6px 6px 0 8px;z-index:1;flex:0 0 auto}
+.top-hero .app-header:before{display:none}
+.top-hero .app-header h1{
+  flex:1;text-align:left;color:#fff;font-size:clamp(1.45rem,6vw,2.05rem);line-height:1.03;letter-spacing:.02em;
+  text-shadow:0 2px 0 rgba(25,67,133,.55),0 5px 18px rgba(19,74,151,.30);
+  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+}
+.top-hero .app-header h1 span{font-weight:1000;font-style:italic;letter-spacing:-.015em}
+.top-hero .app-header h1 small{font-size:.52em;font-weight:1000;letter-spacing:.08em;text-shadow:0 2px 0 rgba(25,67,133,.48),0 4px 12px rgba(19,74,151,.28)}
+.hero-art-space{flex:1;min-height:300px}
+.home-controls{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:auto}
+.top-hero .filters{width:100%;background:rgba(255,255,255,.88);border-color:rgba(255,255,255,.96);box-shadow:0 12px 28px rgba(59,90,154,.14),inset 0 1px 0 rgba(255,255,255,.96)}
+.top-hero .filters .mini-reset{background:rgba(255,255,255,.92)}
+.top-hero .random-button{width:96%;margin:0 auto;display:block;padding:17px 16px;border-radius:22px;font-size:1.14rem;box-shadow:0 14px 28px rgba(205,60,158,.30),0 0 28px rgba(80,177,239,.20),inset 0 1px 0 rgba(255,255,255,.88)}
+.top-hero .home-filter-button{width:min(220px,68%);margin:0 auto 2px;padding:9px 18px;font-size:.95rem;background:rgba(255,255,255,.93);box-shadow:0 7px 18px rgba(53,84,147,.18),inset 0 1px 0 rgba(255,255,255,.98);border-color:rgba(255,255,255,.96)}
+
+@media(max-width:430px){
+  .top-hero{padding-left:8px;padding-right:8px;border-radius:24px;min-height:calc(100svh - 20px)}
+  .top-hero .app-header{padding-left:6px;padding-right:6px}
+  .hero-art-space{min-height:285px}
+  .home-controls{gap:9px}
+  .top-hero .random-button{width:96%;font-size:1.08rem;padding:16px}
+  .top-hero .home-filter-button{width:62%;font-size:.92rem}
+}
+
 @media(prefers-reduced-motion:reduce){.random-button:after{animation:none}}
+
+/* Top design version 3: title is embedded in the hero artwork and the idols sit higher. */
+.top-hero .app-header{display:none}
+.top-hero:before{
+  background-position:center -24px;
+  background-size:cover;
+}
+.top-hero:after{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 52%,rgba(255,255,255,.10) 63%,rgba(255,255,255,.64) 76%,rgba(255,255,255,.96) 100%),
+    radial-gradient(circle at 50% 24%,rgba(255,255,255,.18),transparent 35%);
+}
+.hero-art-space{min-height:340px}
+@media(max-width:430px){
+  .top-hero:before{background-position:center -18px}
+  .hero-art-space{min-height:325px}
+}
